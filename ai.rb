@@ -32,7 +32,7 @@ class AI
 		end
 	end
 	
-	def computer_random_move(i)
+	def computer_random_move()#i
 		n = rand(0..8)
 			if play_board.square_available?(n) == false
 				computer_random_move()
