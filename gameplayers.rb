@@ -1,11 +1,12 @@
 class Gameplayers
-		attr_accessor :player1, :player2, :current, :type
+		attr_accessor :player1, :player2, :current, :type , :level
 		
 		def initialize
 			@player1 = ""
 			@player2 = ""
 			@current = 1
 			@type = ""
+			@level = ""
 		end
 		
 		def p2
@@ -38,4 +39,4 @@ class Gameplayers
 		else current = 1
 		end
 		end
-	end
+end

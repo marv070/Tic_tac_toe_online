@@ -3,7 +3,7 @@ img {display:block;margin:0 auto;border: 3px solid #000080;}
 
 table {font:2.0em consolas; border-collapse: collapse; margin:auto;}
  
-td {padding:20px 25px;}
+td {padding:20px 25px;}                               /*td {padding:20px 25px;}*/
 td.br {border-bottom: 3px solid #000080; border-right: 3px solid #000080;}
  
 td.b {border-bottom: 3px solid #000080;} 

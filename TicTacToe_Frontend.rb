@@ -1,86 +1,128 @@
 require 'sinatra'
 
 require_relative "ai.rb"
-require_relative"gameplayers.rb"
-require_relative"gameboard.rb"
+require_relative "gameboard.rb"
+require_relative "gameplayers.rb"
 
-ai = AI.new()
+play_board = Gameboard.new()
+players = Gameplayers.new()
+ai_initi = false
+ai = ""
+
+def load_pictures
+  Dir.glob("public/*.{png,PNG,jpg,JPG}")
+end
+
+get '/' do
+   #@pictures = load_pictures
+   erb :index
+end
+
+get '/rules' do
+  #@title = 'Tic Tac Toe Rules'
+  erb :rules
+end
+
+get '/playgame' do
+	#@title = 'Play Tic Tac Toe!'
+	erb :playgame
+end
+
+get '/minedminds' do
+	#@title = 'Mined Minds'
+	erb :minedminds
+end
 
 get '/tictactoe' do
-	tyoe= params[:typeofgame]
-	erb :OneplayerorTwoplayer, :locals => {:message => "", :board => ai.play_board.board}
+	erb :OneplayerorTwoplayer, :locals => {:message => "Lets Play Some Tic-Tac-Toe", :board => play_board.board}
 end
 
 post '/tictactoe' do
-gameplayers = Gameplayers.new
-	ai.players.type = params[:gametype]
-	if ai.players.type == "1"
-		erb :howhard, :locals => {:message => "You Chose to play a 1 player game", :board => ai.play_board.board}
+	players.type = params[:gametype]
+	if players.type == "1"
+		erb :howhard, :locals => {:message => "You Chose a 1 Player VS the Computer Game", :board => play_board.board}
 	else
-		erb :marker, :locals => {:message => "You Chose to play a 2 player game", :board => ai.play_board.board}
+		erb :marker, :locals => {:message => "You Chose a 2 player game", :board => play_board.board}
 	end
 end
 
 post '/marker' do
-		ai.level = params[:difficulty] if ai.players.type == "1"
-	
-	erb :marker, :locals => {:message => "Really your gonna play that level?", :board => ai.play_board.board}
+		players.level = params[:level] 
+		if players.type == "1"
+			erb :marker, :locals => {:message => "Really your gonna play EASY??", :board => play_board.board}
+		elsif players.type == "2"
+			erb :marker, :locals => {:message => "MEDIUM is cool but how about HARD??", :board => play_board.board}
+		else 	erb :marker, :locals => {:message => "Hard?? You know it cant be beat right?", :board => play_board.board}
+
+		end
 end
 
 post '/squares' do
-	ai.players.player1 = params[:XorO]
-	ai.players.player2 = ai.players.p2()
-	erb :squares, :locals => {:player1 => ai.players.player1, :player2 => ai.players.player2, 
-							  :message => "Player 1 is #{ai.players.player1} so Player 2 is #{ai.players.player2} ", :message2 => "", 
-							  :current => ai.players.current, :board => ai.play_board.board, :type => ai.players.type, :invaild => ""}
+	players.player1 = params[:XorO]
+	players.player2 = players.p2()
+	erb :squares, :locals => {:p1 => players.player1, :p2 => players.player2, 
+							  :invaild => "", :message2 => "Player 1 is #{players.player1} & Player 2 is #{players.player2} ", 
+							  :current => players.current, :board => play_board.board, :type => players.type}
 end
 
 post '/game' do
 	choice = params[:choice].to_i
-	player_marker = ai.players.current_player()
+	player_marker = players.current_player()
 	
-	if ai.play_board.square_available?(choice - 1) == true
-		ai.play_board.board[choice - 1] = player_marker
+	if play_board.square_available?(choice - 1) == true
+		play_board.board[choice - 1] = player_marker
 		redirect to('/status')
 	else
-		erb :squares, :locals => {:player1 => ai.players.player1, :player2 => ai.players.player2, 
-								  :invaild => "Hey man #{choice} is already taken", :error2 => "Please choose again.",:message => "",:message2 => "", 
-								  :current => ai.players.current, :board => ai.play_board.board, :type => ai.players.type}
+		erb :squares, :locals => {:p1 => players.player1, :p2 => players.player2, 
+								  :invaild => "Hey #{players.current} #{choice} is already taken", :message2 => "Please choose again.", 
+								  :current => players.current, :board => play_board.board, :type => players.type}
 	end	
 end
 
-get '/cpu' do
-	player_marker = ai.players.current_player()
-	move = ai.computer_move(ai.level)
-	ai.play_board.board[move] = player_marker
+get '/computerai' do
+		player_marker = players.current_player()
+	if players.level == "easy"
+		ai = Easy.new(play_board) if ai_initi == false
+		ai_initi = true
+		move = ai.computer_move()
+	elsif players.level == "medium"
+		ai = Medium.new(play_board, players) if ai_initi == false
+		ai_initi = true
+		move = ai.computer_move()
+	elsif players.level == "hard"	
+		ai = Negamax.new(play_board,players) if ai_initi == false  ####added players
+		ai_initi = true
+		move = ai.computer_move() ##removed player_marker from ()
+	end
+	play_board.board[move] = player_marker
 	redirect to('/status')
 end
 
 get '/status' do
-	if ai.play_board.winner?(ai.players.current_player) == true
+	if play_board.winner?(players.current_player) == true
 		redirect to('/win')
-	elsif ai.play_board.board_full?() == true
+	elsif play_board.board_full?() == true
 		redirect to('/tie')
 	end
 	
-	ai.players.current = ai.players.change()
-	redirect to('/cpu') if ai.players.type == "1" && ai.players.current == 2
-	erb :squares, :locals => {:player1 => ai.players.player1, :player2 => ai.players.player2, 
-							  :invaild => "", :message => "", :message2 => "", 
-							  :current => ai.players.current, :board => ai.play_board.board, :type => ai.players.type}	
+	players.current = players.change()
+	redirect to('/computerai') if players.type == "1" && players.current == 2
+	erb :squares, :locals => {:p1 => players.player1, :p2 => players.player2, 
+							  :invaild => "", :message2 => "", 
+							  :current => players.current, :board => play_board.board, :type => players.type}	
 end
 
 get '/win' do
-	erb :gameover, :locals => {:message => "!!! Hey player #{ai.players.current} you win!!!", :board => ai.play_board.board}
+	erb :gameover, :locals => {:message => "Player #{players.current} wins!!! & Player #{players.change()} Sucks", :board => play_board.board}
 end
 
 get '/tie' do
-	erb :gameover, :locals => {:message => "It's a tie.", :board => ai.play_board.board}
+	erb :gameover, :locals => {:message => "Player #{players.current} & Player #{players.change()} TIE ..... Boooo You both suck", :board => play_board.board}
 end
 
 post '/new' do
-	ai = AI.new()
-	# game_board = Board.new()
-	# players = Players.new()
+	play_board = Gameboard.new()
+	players = Gameplayers.new()
+	ai_initi = false
 	redirect to('/tictactoe')
 end
