@@ -89,7 +89,7 @@ post '/game' do
 	else
 		erb :squares, :locals => {:p1 => players.player1, 
 								  :p2 => players.player2, 
-								  :invaild => "Hey #{players.current} #{choice} is already taken", 
+								  :invaild => "Hey Player#{players.current}, Square #{choice} is already taken", 
 								  :message2 => "Please choose again.", 
 								  :current => players.current, 
 								  :board => play_board.board, 
