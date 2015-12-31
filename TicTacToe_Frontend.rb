@@ -35,6 +35,9 @@ get '/minedminds' do
 end
 
 get '/tictactoe' do
+	play_board = Gameboard.new()
+	players = Gameplayers.new()
+	ai_initi = false
 	erb :OneplayerorTwoplayer, :locals => {:message => "Lets Play Some Tic-Tac-Toe", :board => play_board.board}
 end
 
