@@ -18,7 +18,6 @@ class MyTest < Minitest::Test
     get '/'
     assert last_response.ok?
     assert last_response.body.include?('slideshowimages("mm.png","rules2.png.gif","board.png")')
-    assert last_response.body.include?('slideshowlinks("/minedminds","/rules","/playgame")')
   end
 
   def test_it_redirects_to_rules_erb
@@ -45,7 +44,6 @@ class MyTest < Minitest::Test
     assert_equal "http://example.org/minedminds",last_request.url
     assert last_response.body.include?('"http://www.minedminds.org"><center><IMG SRC="mm.png" ALT="Mined Minds"')
     assert last_response.body.include?('"https://www.facebook.com/MinedMinds"')
-    #assert_equal '"https://www.facebook.com/MinedMinds"', last_response.body
   end
 
   def test_for_pictures1
