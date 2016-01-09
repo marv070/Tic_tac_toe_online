@@ -7,11 +7,12 @@ require_relative "gameboard.rb"
 require_relative "gameplayers.rb"
 require_relative "moderately_easy.rb"
 require_relative "simple.rb"
+enable :sessions
 play_board = Gameboard.new()
 players = Gameplayers.new()
 
 ai = ""
-enable :sessions
+
 
 def load_pictures
   Dir.glob("public/*.{png,PNG,jpg,JPG}")
