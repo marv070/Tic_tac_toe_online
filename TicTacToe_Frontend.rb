@@ -56,21 +56,22 @@ end
 post '/marker' do
 		session[:players].level = params[:level] 
 		session[:level] = params[:level]
-
+        session[:ai] = ai
+		
 		if session[:level] == "easy"
-		ai = Easy.new(session[:play_board])
+		session[:ai] = Easy.new(session[:play_board])
 			erb :marker, :locals => {:message => "Really your gonna play EASY??", :board => session[:play_board].board}
 		elsif session[:level] =="mild"
-		ai = ModEasy.new(session[:play_board], session[:players])
+		session[:ai] = ModEasy.new(session[:play_board], session[:players])
 			erb :marker, :locals => {:message => "Really your gonna play Mild??", :board => session[:play_board].board}
 		elsif session[:level] =="simple"
-		ai = Simple.new(session[:play_board], session[:players])
+		session[:ai] = Simple.new(session[:play_board], session[:players])
 			erb :marker, :locals => {:message => "Really your gonna play Simple??", :board => session[:play_board].board}
 		elsif session[:level] == "medium"
-		ai = Medium.new(session[:play_board], session[:players])
+		session[:ai] = Medium.new(session[:play_board], session[:players])
 			erb :marker, :locals => {:message => "MEDIUM is cool but how about HARD??", :board => session[:play_board].board}
-		else 	
-		ai = Negamax.new(session[:play_board],session[:players])
+		else session[:level] == "hard"	
+		session[:ai] = Negamax.new(session[:play_board],session[:players])
 			erb :marker, :locals => {:message => "Hard?? You know it cant be beat right?", :board => session[:play_board].board}
 
 		end
@@ -80,7 +81,7 @@ post '/squares' do
 	session[:players].player1 = params[:XorO]
 	session[:players].player2 = session[:players].p2()
 	erb :squares, :locals => {:p1 => session[:players].player1, :p2 => session[:players].player2, 
-							  :invaild => "", :message2 => "Player 1 is #{players.player1} & Player 2 is #{players.player2} ", 
+							  :invaild => "", :message2 => "Player 1 is #{session[:players].player1} & Player 2 is #{session[:players].player2} ", 
 							  :current => session[:players].current, :board => session[:play_board].board, :type => session[:players].type}
 end
 
@@ -95,7 +96,7 @@ post '/game' do
 	else
 		erb :squares, :locals => {:p1 => session[:players].player1, 
 								  :p2 => session[:players].player2, 
-								  :invaild => "Hey Player#{players.current}, Square #{choice} is already taken", 
+								  :invaild => "Hey Player#{session[:players].current}, Square #{choice} is already taken", 
 								  :message2 => "Please choose again.", 
 								  :current => session[:players].current, 
 								  :board => session[:play_board].board, 
@@ -105,7 +106,7 @@ end
 
 get '/computerai' do
   player_marker = session[:players].current_player()
-  move = ai.computer_move()
+  move = session[:ai].computer_move()
   session[:play_board].board[move] = player_marker
   redirect to('/status')
 end
