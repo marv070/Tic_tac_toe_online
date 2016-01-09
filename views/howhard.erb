@@ -24,16 +24,14 @@
 </table>
 
 <form action="/marker" method="POST">
-				<input type="radio" name="level" value="easy">  Easy
-				<br>
-				<input type="radio" name="level" value="mild">  Mild
-				<br>
-				<input type="radio" name="level" value="simple">  Simple
-				<br>
-				<input type="radio" name="level" value="medium">  Medium
-				<br>
-				<input type="radio" name="level" value="hard">  Hard
-				<br>
-				<input type="submit" name="submit" value="Submit">
-			</form>
+				<select id="LevelSelect" name="level">
+					<option value="simple">Choose</option>
+					<option value="easy">Easy</option>
+					<option value="mild">Mild</option>
+					<option value="simple">Simple</option>
+					<option value="medium">Medium</option>
+					<option value="hard">Hard</option>
+					<select>
+				<input type="submit" name="submit" value="submit" id="LevelSelect">
+</form>
 

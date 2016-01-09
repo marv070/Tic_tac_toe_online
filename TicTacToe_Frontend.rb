@@ -114,7 +114,7 @@ end
 get '/status' do
 	if session[:play_board].winner?(session[:players].current_player) == true
 		redirect to('/win')
-	elsif play_board.board_full?() == true
+	elsif session[:play_board].board_full?() == true
 		redirect to('/tie')
 	end
 	
@@ -140,12 +140,12 @@ end
 
 
 get '/win' do
-	erb :gameover, :locals => {:message => "Player #{players.current} wins!!! & Player #{players.change()} Sucks", 
+	erb :gameover, :locals => {:message => "Player #{session[:players].current} wins!!! & Player #{session[:players].change()} Sucks", 
 							   :board => session[:play_board].board}
 end
 
 get '/tie' do
-	erb :gameover, :locals => {:message => "Player #{players.current} & Player #{players.change()} TIE ..... Boooo You both suck", 
+	erb :gameover, :locals => {:message => "Player #{session[:players].current} & Player #{session[:players].change()} TIE ..... Boooo You both suck", 
 							   :board => session[:play_board].board}
 end
 
