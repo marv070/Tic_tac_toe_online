@@ -18,7 +18,7 @@ class Negamax
 	def negamax(board, mark, depth)
 		mark == "O" ? opponent = "X" : opponent = "O"
 		if game_board.winner?(mark) || game_board.board_full?()
-			return game_result(mark, opponent)
+			return game_result(mark, opponent, depth)
 		else 
 			max = -1.0/0
 			available_moves.each do |space|
@@ -40,11 +40,11 @@ class Negamax
 		game_board.board.each_index.select { |s| game_board.board[s] != "X" && game_board.board[s] != "O"}
 	end
 	
-	def game_result(mark, opponent)
+	def game_result(mark, opponent, depth)
 		if game_board.winner?(mark)
-			return 1
+			return 100 - depth
 		elsif game_board.winner?(opponent)
-			return -1
+			return -(100 - depth)
 		else 
 			return 0
 		end
