@@ -40,7 +40,7 @@ class Negamax
 		game_board.board.each_index.select { |s| game_board.board[s] != "X" && game_board.board[s] != "O"}
 	end
 	
-	def game_result(mark, opponent, depth)
+	def game_result(mark, opponent, depth) #depth used to determine score
 		if game_board.winner?(mark)
 			return 100 - depth
 		elsif game_board.winner?(opponent)
