@@ -19,19 +19,7 @@ class MyTests < Minitest::Test
 
   end
 
-def test_random_function_returns_random_available_choice_2
-    game_board = Gameboard.new()  
-    game_players = Gameplayers.new()
-	game_board.board = ["O","X","X","O","X","O","X","O","X"]
-	game_players.current = 2
-	ai = Easy.new(game_board)
-    assert(true,[0..8])
-
-  end
-
-
-
-# Negamax tests
+## Negamax tests
 	def test_corner_move
 		game_board = Gameboard.new()
 		game_players = Gameplayers.new()
